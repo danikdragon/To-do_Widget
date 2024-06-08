@@ -20,13 +20,16 @@ ApplicationWindow {
         color: "black"
         opacity: 0.5
     }
-
+    TextArea{
+        id: xyz
+    }
     Button {
         id: createWindowButton
-        text: "Create New Window"
+        text: "Создать стикер"
         anchors.centerIn: parent
         onClicked: {
-            windowComponent.createObject(null);
+            let item = windowComponent.createObject();
+            item.abc = xyz.text
         }
     }
 
@@ -34,21 +37,32 @@ ApplicationWindow {
         id: windowComponent
         Window {
             id: root
-            flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
+            property string abc: ""
+            flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground | Qt.WindowStaysOnBottomHint
             visible: true
-            width: 300
-            height: 200
+            width: textSticer.width < 200 ? 100 : textSticer.width + 40
+            height: textSticer.height < 100 ? 100: textSticer.height + 40
+
             color: "black"
             Text {
-                text: "Привет, мир!"
+                id: textSticer
+                text: abc
                 anchors.centerIn: parent
                 color: isColorDark(root.color) ? "white" : "black"
             }
             MouseArea {
                 anchors.fill: parent
+                property int firstX: 0
+                property int firstY: 0
+                onPressed: {
+                    firstX = mouseX
+                    firstY = mouseY
+                }
                 onPositionChanged: {
-                    root.x += mouseX - (root.width / 2)
-                    root.y += mouseY - (root.height / 2)
+                    if (mouse.buttons & Qt.LeftButton) {
+                        root.x += mouseX - firstX
+                        root.y += mouseY - firstY
+                    }
                 }
             }
         }
