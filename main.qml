@@ -44,8 +44,16 @@ ApplicationWindow {
             anchors.bottom: parent.bottom
             Button {
                 text: "Создать png/gif"
+                FileDialog{
+                    id: shearePng
+                    onAccepted:{
+                        let item = pngComponent.createObject()
+                        item.href = shearePng.file
+                        console.log(shearePng.file);
+                    }
+                }
                 onClicked: {
-                    root.hide()
+                    shearePng.open();
                 }
             }
             RowLayout{
@@ -95,6 +103,12 @@ ApplicationWindow {
     Component {
         id: stickerComponent
         Sticker{
+            id: strickerWindow
+        }
+    }
+    Component {
+        id: pngComponent
+        PngSticker{
             id: strickerWindow
         }
     }
