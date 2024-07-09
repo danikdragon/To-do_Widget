@@ -12,10 +12,12 @@ ApplicationWindow {
         var brightness = (r * 299 + g * 587 + b * 114) / 1000;
         return brightness < 128;
     }
-    visible: true
-    id: sticerWindow
+
     property string title: ""
     property string description: ""
+
+    visible: true
+    id: sticerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
     width: titleSticer.width < descriptionSticer.width ?
                (descriptionSticer.width < 200 ? 100 : descriptionSticer.width + 40) :

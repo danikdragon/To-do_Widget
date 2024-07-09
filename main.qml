@@ -63,9 +63,11 @@ ApplicationWindow {
                     text: "Запускать вместе с windows"
                 }
                 CheckBox {
+                    id: checkTodo
                     text: "To-do"
                 }
                 CheckBox {
+                    id: closeTodo
                     text: "Закрывать To-do"
                 }
             }
@@ -74,9 +76,17 @@ ApplicationWindow {
                 anchors.right: parent.right
                 text: "Создать стикер"
                 onClicked: {
-                    let item = stickerComponent.createObject()
-                    item.title = titleArea.text
-                    item.description = discriptionArea.text
+                    if(checkTodo.checked === true){
+                        let item = todoComponent.createObject();
+                        item.temp = discriptionArea.text
+                        item.closeOnCompletion = closeTodo.checked;
+                        item.title = titleArea.text;
+                    }
+                    else{
+                        let item = stickerComponent.createObject()
+                        item.title = titleArea.text
+                        item.description = discriptionArea.text
+                    }
                 }
             }
         }
@@ -109,6 +119,12 @@ ApplicationWindow {
     Component {
         id: pngComponent
         PngSticker{
+            id: strickerWindow
+        }
+    }
+    Component {
+        id: todoComponent
+        ToDoSticker{
             id: strickerWindow
         }
     }

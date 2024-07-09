@@ -4,9 +4,10 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 ApplicationWindow {
+    property string href: ""
+
     visible: true
     id: sticerWindow
-    property string href: ""
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
     width: imageSource.width + 10
     height: imageSource.height + 10

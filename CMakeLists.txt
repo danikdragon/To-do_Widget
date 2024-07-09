@@ -17,6 +17,7 @@ qt_add_qml_module(appTo-Do
     QML_FILES main.qml
     QML_FILES Sticker.qml
     QML_FILES PngSticker.qml
+    RESOURCES ToDoSticker.qml
 )
 
 set_target_properties(appTo-Do PROPERTIES
