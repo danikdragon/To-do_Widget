@@ -12,78 +12,39 @@ ApplicationWindow {
         var brightness = (r * 299 + g * 587 + b * 114) / 1000;
         return brightness < 128;
     }
+    function createTodo(area, cheackBox,) {
+        closeOnCompletion = cheackBox;
+        let buffer = "";
+        for (let i = 0; i < area.length; i++) {
+            if (area[i] === '\n') {
+                if (buffer !== "") {
+                    todo.model.append({task: buffer, checkedModel: false});
+                    buffer = "";
+                }
+            } else {
+                buffer += area[i];
+            }
+        }
+        if (buffer !== "")
+        {
+            todo.model.append({task: buffer});
+        }
 
+    }
     property string title: ""
-    property string temp: ""
-    property string todo: []
-    property bool flagsCompletion: []
     property bool closeOnCompletion: false
-    property int maxWidhtTodo: 0
+    property int maxWidhtTodo
+    property int allHeightElemetns
 
     visible: true
     id: sticerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
-    width: titleSticer.width < maxWidhtTodo ? maxWidhtTodo : titleSticer.width
-    height: todoList.height + titleSticer.height
+    // width: titleSticer.width > maxWidhtTodo ? maxWidhtTodo : titleSticer.width + 100
+    height: allHeightElemetns + titleSticer.height
+    width: maxWidhtTodo
 
     Material.theme: Material.System
     Material.accent: "#9C27B0"
-    ColumnLayout{
-        anchors.fill: parent
-        anchors.centerIn: parent
-        anchors.margins: 10
-        Text {
-            id: titleSticer
-            font.bold: true
-            text: title
-            color: isColorDark(sticerWindow.color) ? "white" : "black"
-        }
-        ListView{
-            id: todoList
-            width: maxWidhtTodo
-            height: parent.height
-            model: ListModel {}
-            delegate: RowLayout{
-                Text{
-                    text: task
-                    color: isColorDark(sticerWindow.color) ? "white" : "black"
-                    Component.onCompleted:{
-                        if(parent.widht + check.width > maxWidhtTodo){
-                            maxWidhtTodo = parent.width + check.width
-                        }
-                    }
-                }
-                CheckBox {
-                    id: check
-                    onCheckedChanged: {
-                        if(closeOnCompletion === true){
-                            for(let i = 0; i < flagsCompletion; i++)
-                            {
-                                if(check.checked === false && flagsCompletion[i] === true)
-                                {
-                                    flagsCompletion[i] = false;
-                                    break;
-                                }
-                                else if(check.checked === true && flagsCompletion[i] === false){
-                                    flagsCompletion[i] = true;
-                                    break;
-                                }
-                            }
-                            let completeTusk = true;
-                            for(let j = 0; j < flagsCompletion; j++)
-                            {
-                                if(flagsCompletion[j] === false){
-                                    completeTusk = false;
-                                    break;
-                                }
-                            }
-                            completeTusk === true && sticerWindow.close();
-                        }
-                    }
-                }
-            }
-        }
-    }
     MouseArea {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         anchors.fill: parent
@@ -118,20 +79,53 @@ ApplicationWindow {
             MenuItem { text: "Редактировать" }
         }
     }
-    // Component.onCompleted: {
-    //     let buffer = "";
-    //     for (let i = 0; i < temp.length; i++) {
-    //         console.log("for")
-    //         if (temp[i] === '\n') {
-    //             if (buffer !== "") {
-    //                 todo.push(buffer);
-    //                 buffer = "";
-    //             }
-    //         } else {
-    //             buffer += temp[i];
-    //         }
-    //     }
-    //     if (buffer !== "")
-    //         todo.push(buffer);
-    // }
+    ColumnLayout{
+        anchors.fill: parent
+        anchors.centerIn: parent
+        anchors.margins: 10
+        Text {
+            id: titleSticer
+            font.bold: true
+            text: title
+            color: isColorDark(sticerWindow.color) ? "white" : "black"
+        }
+        Repeater{
+            id: todo
+            anchors.fill: parent
+            // width: maxWidhtTodo
+            // height: parent.height
+            model: ListModel {}
+            delegate: RowLayout{
+                Text{
+                    text: task
+                    color: isColorDark(sticerWindow.color) ? "white" : "black"
+                    Component.onCompleted:{
+                        if(parent.height > check.height){
+                            allHeightElemetns += parent.height;
+                        }
+                        else{
+                            allHeightElemetns += check.height;
+                        }
+                        if(parent.widht > maxWidhtTodo){
+                            maxWidhtTodo = parent.width
+                        }
+                    }
+                }
+                CheckBox {
+                    id: check
+                    checked: checkedModel
+                    onCheckedChanged: {
+                        checkedModel = check.checked
+                        if(closeOnCompletion === true){
+                            let completeTusk = true
+                            for(let i = 0; i < todo.count; i++){
+                                todo.model.get(i).checkedModel === false && (completeTusk = false);
+                            }
+                            completeTusk && sticerWindow.close();
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

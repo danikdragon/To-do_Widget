@@ -78,9 +78,8 @@ ApplicationWindow {
                 onClicked: {
                     if(checkTodo.checked === true){
                         let item = todoComponent.createObject();
-                        item.temp = discriptionArea.text
-                        item.closeOnCompletion = closeTodo.checked;
                         item.title = titleArea.text;
+                        item.createTodo(discriptionArea.text, closeTodo.checked);
                     }
                     else{
                         let item = stickerComponent.createObject()
