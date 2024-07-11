@@ -118,20 +118,20 @@ ApplicationWindow {
             MenuItem { text: "Редактировать" }
         }
     }
-    Component.onCompleted: {
-        let buffer = "";
-        for (let i = 0; i < temp.length; i++) {
-            console.log("for")
-            if (temp[i] === '\n') {
-                if (buffer !== "") {
-                    todo.push(buffer);
-                    buffer = "";
-                }
-            } else {
-                buffer += temp[i];
-            }
-        }
-        if (buffer !== "")
-            todo.push(buffer);
-    }
+    // Component.onCompleted: {
+    //     let buffer = "";
+    //     for (let i = 0; i < temp.length; i++) {
+    //         console.log("for")
+    //         if (temp[i] === '\n') {
+    //             if (buffer !== "") {
+    //                 todo.push(buffer);
+    //                 buffer = "";
+    //             }
+    //         } else {
+    //             buffer += temp[i];
+    //         }
+    //     }
+    //     if (buffer !== "")
+    //         todo.push(buffer);
+    // }
 }
