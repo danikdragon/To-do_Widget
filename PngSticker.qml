@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Material
+import Qt.labs.platform
 
 ApplicationWindow {
     property string href: ""
@@ -46,6 +47,7 @@ ApplicationWindow {
                 sticerWindow.y += mouseY - firstY;
             }
         }
+
         Menu {
             id: menu
             MenuItem {
@@ -53,6 +55,18 @@ ApplicationWindow {
                 onTriggered: {
                     sticerWindow.close()
                 }
+            }
+            MenuItem {
+                text: "Изменить"
+                onTriggered: {
+                    shearePng.open();
+                }
+            }
+        }
+        FileDialog{
+            id: shearePng
+            onAccepted:{
+                href = shearePng.file
             }
         }
     }

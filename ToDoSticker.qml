@@ -26,22 +26,22 @@ ApplicationWindow {
             }
         }
         if (buffer !== "")
-        {
             todo.model.append({task: buffer});
+    }
+    function destroyEmpty(){
+        if(titleSticer.text === "")
+        {
+            titleSticer.destroy()
         }
 
     }
-    property string title: ""
     property bool closeOnCompletion: false
-    property int maxWidhtTodo
-    property int allHeightElemetns
 
     visible: true
     id: sticerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
-    // width: titleSticer.width > maxWidhtTodo ? maxWidhtTodo : titleSticer.width + 100
-    height: allHeightElemetns + titleSticer.height
-    width: maxWidhtTodo
+    width: titleSticer.contentWidth + 20
+    height: titleSticer.contentHeight
 
     Material.theme: Material.System
     Material.accent: "#9C27B0"
@@ -83,6 +83,7 @@ ApplicationWindow {
         anchors.fill: parent
         anchors.centerIn: parent
         anchors.margins: 10
+        spacing: 10
         Text {
             id: titleSticer
             font.bold: true
@@ -92,27 +93,13 @@ ApplicationWindow {
         Repeater{
             id: todo
             anchors.fill: parent
-            // width: maxWidhtTodo
-            // height: parent.height
             model: ListModel {}
-            delegate: RowLayout{
-                Text{
-                    text: task
-                    color: isColorDark(sticerWindow.color) ? "white" : "black"
-                    Component.onCompleted:{
-                        if(parent.height > check.height){
-                            allHeightElemetns += parent.height;
-                        }
-                        else{
-                            allHeightElemetns += check.height;
-                        }
-                        if(parent.widht > maxWidhtTodo){
-                            maxWidhtTodo = parent.width
-                        }
-                    }
-                }
+            delegate: RowLayout {
                 CheckBox {
                     id: check
+                    anchors{
+                        verticalCenter: todoText.verticalCenter
+                    }
                     checked: checkedModel
                     onCheckedChanged: {
                         checkedModel = check.checked
@@ -122,6 +109,17 @@ ApplicationWindow {
                                 todo.model.get(i).checkedModel === false && (completeTusk = false);
                             }
                             completeTusk && sticerWindow.close();
+                        }
+                    }
+                }
+                Text{
+                    id: todoText
+                    text: task
+                    color: isColorDark(sticerWindow.color) ? "white" : "black"
+                    Component.onCompleted:{
+                        sticerWindow.height += check.height + 20;
+                        if(todoText.contentWidth + check.width > sticerWindow.width){
+                            sticerWindow.width = todoText.contentWidth + check.width + 30
                         }
                     }
                 }

@@ -14,6 +14,11 @@ ApplicationWindow {
     title: "To-Do Widgets"
     Material.theme: Material.System
     Material.accent: "#9C27B0"
+
+    property var pngStickers
+    property var classicStickers
+    property var todoStickers
+
     ColumnLayout{
         anchors.margins: 10
         anchors.fill: parent
@@ -49,7 +54,7 @@ ApplicationWindow {
                     onAccepted:{
                         let item = pngComponent.createObject()
                         item.href = shearePng.file
-                        console.log(shearePng.file);
+                        pngStickers.push(item)
                     }
                 }
                 onClicked: {
@@ -76,15 +81,19 @@ ApplicationWindow {
                 anchors.right: parent.right
                 text: "Создать стикер"
                 onClicked: {
-                    if(checkTodo.checked === true){
+                    if(checkTodo.checked && discriptionArea.text !== ""){
                         let item = todoComponent.createObject();
                         item.title = titleArea.text;
                         item.createTodo(discriptionArea.text, closeTodo.checked);
+                        item.destroyEmpty();
+                        todoStickers.push(item);
                     }
-                    else{
-                        let item = stickerComponent.createObject()
-                        item.title = titleArea.text
-                        item.description = discriptionArea.text
+                    else if(titleArea.text !== "" || discriptionArea.text !== ""){
+                        let item = stickerComponent.createObject();
+                        item.title = titleArea.text;
+                        item.description = discriptionArea.text;
+                        item.destroyEmpty();
+                        classicStickers.push(item);
                     }
                 }
             }

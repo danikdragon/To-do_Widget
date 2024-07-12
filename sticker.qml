@@ -12,18 +12,31 @@ ApplicationWindow {
         var brightness = (r * 299 + g * 587 + b * 114) / 1000;
         return brightness < 128;
     }
-
-    property string title: ""
+    function destroyEmpty(){
+        if(titleSticker.text === "")
+        {
+            titleSticker.destroy()
+            stickerWindow.width = descriptionSticker.contentWidth + 20 < 100 ? 100 : descriptionSticker.contentWidth + 20
+            stickerWindow.height = descriptionSticker.contentHeight + 40
+        }
+        if(descriptionSticker.text === "")
+        {
+            descriptionSticker.destroy()
+            stickerWindow.width = titleSticker.contentWidth + 20 < 100 ? 100 : titleSticker.contentWidth + 20
+            stickerWindow.height = titleSticker.contentHeight + 40
+        }
+    }
     property string description: ""
 
     visible: true
-    id: sticerWindow
+    id: stickerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
-    width: titleSticer.width < descriptionSticer.width ?
-               (descriptionSticer.width < 200 ? 100 : descriptionSticer.width + 40) :
-               (titleSticer.width < 200 ? 100 : titleSticer.width + 40)
+    width: titleSticker.contentWidth < descriptionSticker.contentWidth ?
+               (descriptionSticker.contentWidth + 20 < 100 ? 100 : descriptionSticker.contentWidth + 20) :
+               (titleSticker.contentWidth + 20 < 100 ? 100 : titleSticker.contentWidth + 20)
 
-    height: descriptionSticer.height < 200 ? 100 : descriptionSticer.height + 40
+    height: titleSticker.contentHeight + descriptionSticker.contentHeight + 40
+
     Material.theme: Material.System
     Material.accent: "#9C27B0"
     ColumnLayout{
@@ -31,15 +44,15 @@ ApplicationWindow {
         anchors.centerIn: parent
         anchors.margins: 10
         Text {
-            id: titleSticer
+            id: titleSticker
             font.bold: true
             text: title
-            color: isColorDark(sticerWindow.color) ? "white" : "black"
+            color: isColorDark(stickerWindow.color) ? "white" : "black"
         }
         Text {
-            id: descriptionSticer
+            id: descriptionSticker
             text: description
-            color: isColorDark(sticerWindow.color) ? "white" : "black"
+            color: isColorDark(stickerWindow.color) ? "white" : "black"
         }
     }
     MouseArea {
@@ -61,8 +74,8 @@ ApplicationWindow {
         }
         onPositionChanged: {
             if (mouse.buttons & Qt.LeftButton) {
-                sticerWindow.x += mouseX - firstX;
-                sticerWindow.y += mouseY - firstY;
+                stickerWindow.x += mouseX - firstX;
+                stickerWindow.y += mouseY - firstY;
             }
         }
         Menu {
@@ -70,7 +83,7 @@ ApplicationWindow {
             MenuItem {
                 text: "Закрыть"
                 onTriggered: {
-                    sticerWindow.close()
+                    stickerWindow.close()
                 }
             }
             MenuItem { text: "Редактировать" }
