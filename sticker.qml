@@ -86,7 +86,9 @@ ApplicationWindow {
                     stickerWindow.close()
                 }
             }
-            MenuItem { text: "Редактировать" }
+            MenuItem {
+                text: "Редактировать"
+            }
         }
     }
 }

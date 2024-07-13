@@ -15,38 +15,62 @@ ApplicationWindow {
     Material.theme: Material.System
     Material.accent: "#9C27B0"
 
-    property var pngStickers
-    property var classicStickers
-    property var todoStickers
+    property var pngStickers: []
+    property var classicStickers: []
+    property var todoStickers: []
 
     ColumnLayout{
-        anchors.margins: 10
-        anchors.fill: parent
+        anchors{
+            margins: 10
+            fill: parent
+        }
         ColumnLayout{
-            anchors.margins: 10
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
+            anchors{
+                margins: 10
+                left: parent.left
+                right: parent.right
+                top: parent.top
+            }
             TextArea {
-                placeholderText: "Название"
                 id: titleArea
+                placeholderText: "Название"
                 color: "white"
-                anchors.left: parent.left
-                anchors.right: parent.right
+                anchors{
+                    left: parent.left
+                    right: parent.right
+                }
+                wrapMode: "Wrap"
+                onHeightChanged: {
+                    //16
+                    if(discriptionArea.height + titleArea.height + (createWindowButton.height * 2) > root.height){
+                        root.height += 16
+                    }
+                }
             }
             TextArea{
+                id: discriptionArea
                 placeholderText: "Запись: Enter создает новый пункт To-Do"
                 Material.background: "white"
-                anchors.left: parent.left
-                anchors.right: parent.right
-                id: discriptionArea
+                anchors{
+                    left: parent.left
+                    right: parent.right
+                }
+                wrapMode: "Wrap"
+                onHeightChanged: {
+                    //16
+                    if(discriptionArea.height + titleArea.height + (createWindowButton.height * 2) > root.height){
+                        root.height += 16
+                    }
+                }
             }
         }
 
         RowLayout{
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            anchors{
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
             Button {
                 text: "Создать png/gif"
                 FileDialog{

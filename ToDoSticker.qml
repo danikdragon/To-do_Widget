@@ -76,7 +76,9 @@ ApplicationWindow {
                     sticerWindow.close()
                 }
             }
-            MenuItem { text: "Редактировать" }
+            MenuItem {
+                text: "Редактировать"
+            }
         }
     }
     ColumnLayout{
