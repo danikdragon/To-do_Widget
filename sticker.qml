@@ -15,16 +15,20 @@ ApplicationWindow {
     function destroyEmpty(){
         if(titleSticker.text === "")
         {
-            titleSticker.destroy()
+            titleSticker.visible = false;
             stickerWindow.width = descriptionSticker.contentWidth + 20 < 100 ? 100 : descriptionSticker.contentWidth + 20
             stickerWindow.height = descriptionSticker.contentHeight + 40
         }
         if(descriptionSticker.text === "")
         {
-            descriptionSticker.destroy()
+            descriptionSticker.visible = false;
             stickerWindow.width = titleSticker.contentWidth + 20 < 100 ? 100 : titleSticker.contentWidth + 20
             stickerWindow.height = titleSticker.contentHeight + 40
         }
+    }
+    function returnViseble(){
+        titleSticker.visible = true;
+        descriptionSticker.visible = true;
     }
     property string description: ""
 
@@ -65,12 +69,8 @@ ApplicationWindow {
                 menu.open()
         }
         onPressed: {
-            if (mouse.button === Qt.RightButton) {
-                contextMenu.visible = true
-            }else{
-                firstX = mouseX;
-                firstY = mouseY;
-            }
+            firstX = mouseX;
+            firstY = mouseY;
         }
         onPositionChanged: {
             if (mouse.buttons & Qt.LeftButton) {
@@ -88,6 +88,13 @@ ApplicationWindow {
             }
             MenuItem {
                 text: "Редактировать"
+                onTriggered: {
+                    titleArea.text = titleSticker.text
+                    discriptionArea.text = descriptionSticker.text
+                    pngOrCancel.text = "Отмена"
+                    createWindowButton.text = "Сохранить"
+                    tempId = customId
+                }
             }
         }
     }

@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import Qt.labs.platform
 
 ApplicationWindow {
-    id: root
+    id: rootWin
     width: 700
     height: 450
     visible: true
@@ -18,6 +18,42 @@ ApplicationWindow {
     property var pngStickers: []
     property var classicStickers: []
     property var todoStickers: []
+
+    property alias titleArea: titleArea
+    property alias discriptionArea: discriptionArea
+    property alias pngOrCancel: pngOrCancel
+    property alias createWindowButton: createWindowButton
+    property alias checkTodo: checkTodo
+    property int tempId
+
+    property bool editFlag: false
+
+    function edit(){
+        if(checkTodo.checked === false){
+            classicStickers[tempId].title = titleArea.text;
+            classicStickers[tempId].description = discriptionArea.text;
+            classicStickers[tempId].returnViseble();
+            classicStickers[tempId].destroyEmpty();
+        }
+        else{
+            todoStickers[tempId].title = titleArea.text;
+            todoStickers[tempId].editTodo(discriptionArea.text,closeTodo);
+            todoStickers[tempId].returnViseble();
+            todoStickers[tempId].destroyEmpty();
+        }
+        swapMode()
+        clearArea()
+    }
+    function clearArea(){
+        titleArea.text = ""
+        discriptionArea.text = ""
+        checkTodo.checked = false;
+    }
+    function swapMode(){
+        editFlag = false;
+        pngOrCancel.text = "Создать png/gif"
+        createWindowButton.text = "Создать стикер"
+    }
 
     ColumnLayout{
         anchors{
@@ -42,8 +78,8 @@ ApplicationWindow {
                 wrapMode: "Wrap"
                 onHeightChanged: {
                     //16
-                    if(discriptionArea.height + titleArea.height + (createWindowButton.height * 2) > root.height){
-                        root.height += 16
+                    if(discriptionArea.height + titleArea.height + (createWindowButton.height * 2) > rootWin.height){
+                        rootWin.height += 16
                     }
                 }
             }
@@ -58,8 +94,8 @@ ApplicationWindow {
                 wrapMode: "Wrap"
                 onHeightChanged: {
                     //16
-                    if(discriptionArea.height + titleArea.height + (createWindowButton.height * 2) > root.height){
-                        root.height += 16
+                    if(discriptionArea.height + titleArea.height + (createWindowButton.height * 2) > rootWin.height){
+                        rootWin.height += 16
                     }
                 }
             }
@@ -72,17 +108,26 @@ ApplicationWindow {
                 bottom: parent.bottom
             }
             Button {
+                id: pngOrCancel
                 text: "Создать png/gif"
                 FileDialog{
+                    nameFilters: ["*.png *.jpg *.gif *.jfif"]
                     id: shearePng
                     onAccepted:{
                         let item = pngComponent.createObject()
                         item.href = shearePng.file
                         pngStickers.push(item)
+                        item.customId = pngStickers.length - 1;
                     }
                 }
                 onClicked: {
-                    shearePng.open();
+                    if(pngOrCancel.text !== "Отмена"){
+                        shearePng.open();
+                    }
+                    else{
+                        swapMode()
+                        clearArea()
+                    }
                 }
             }
             RowLayout{
@@ -94,6 +139,9 @@ ApplicationWindow {
                 CheckBox {
                     id: checkTodo
                     text: "To-do"
+                    onCheckedChanged: {
+                        !editFlag && swapMode()
+                    }
                 }
                 CheckBox {
                     id: closeTodo
@@ -105,20 +153,28 @@ ApplicationWindow {
                 anchors.right: parent.right
                 text: "Создать стикер"
                 onClicked: {
-                    if(checkTodo.checked && discriptionArea.text !== ""){
-                        let item = todoComponent.createObject();
-                        item.title = titleArea.text;
-                        item.createTodo(discriptionArea.text, closeTodo.checked);
-                        item.destroyEmpty();
-                        todoStickers.push(item);
+                    if(createWindowButton.text === "Создать стикер"){
+                        if(checkTodo.checked && discriptionArea.text !== ""){
+                            let item = todoComponent.createObject();
+                            item.title = titleArea.text;
+                            item.createTodo(discriptionArea.text, closeTodo.checked);
+                            item.destroyEmpty();
+                            todoStickers.push(item);
+                            item.customId = todoStickers.length - 1;
+                        }
+                        else if(titleArea.text !== "" || discriptionArea.text !== ""){
+                            let item = stickerComponent.createObject();
+                            item.title = titleArea.text;
+                            item.description = discriptionArea.text;
+                            item.destroyEmpty();
+                            classicStickers.push(item);
+                            item.customId = classicStickers.length - 1;
+                        }
                     }
-                    else if(titleArea.text !== "" || discriptionArea.text !== ""){
-                        let item = stickerComponent.createObject();
-                        item.title = titleArea.text;
-                        item.description = discriptionArea.text;
-                        item.destroyEmpty();
-                        classicStickers.push(item);
+                    else{
+                        edit();
                     }
+                    clearArea()
                 }
             }
         }
@@ -127,9 +183,9 @@ ApplicationWindow {
     SystemTrayIcon {
         visible: true
         onActivated: {
-            root.show()
-            root.raise()
-            root.requestActivate()
+            rootWin.show()
+            rootWin.raise()
+            rootWin.requestActivate()
         }
         menu: Menu {
             MenuItem {
@@ -145,19 +201,22 @@ ApplicationWindow {
     Component {
         id: stickerComponent
         Sticker{
-            id: strickerWindow
+            property int customId
+            id: customId
         }
     }
     Component {
         id: pngComponent
         PngSticker{
-            id: strickerWindow
+            property int customId
+            id: customId
         }
     }
     Component {
         id: todoComponent
         ToDoSticker{
-            id: strickerWindow
+            property int customId
+            id: customId
         }
     }
 }

@@ -6,21 +6,20 @@ import Qt.labs.platform
 
 ApplicationWindow {
     property string href: ""
-
     visible: true
     id: sticerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
-    width: imageSource.width + 10
-    height: imageSource.height + 10
+    width: gif.width + 10
+    height: gif.height + 10
     Material.theme: Material.System
     Material.accent: "#9C27B0"
 
     ColumnLayout{
         anchors.fill: parent
         anchors.margins: 10
-        Image{
+        AnimatedImage{
             anchors.centerIn: parent
-            id: imageSource
+            id: gif
             source: href
         }
     }
@@ -34,12 +33,8 @@ ApplicationWindow {
                 menu.open()
         }
         onPressed: {
-            if (mouse.button === Qt.RightButton) {
-                contextMenu.visible = true
-            }else{
-                firstX = mouseX;
-                firstY = mouseY;
-            }
+            firstX = mouseX;
+            firstY = mouseY;
         }
         onPositionChanged: {
             if (mouse.buttons & Qt.LeftButton) {
@@ -65,8 +60,10 @@ ApplicationWindow {
         }
         FileDialog{
             id: shearePng
+            nameFilters: ["*.png *.jpg *.gif *.jfif"]
             onAccepted:{
-                href = shearePng.file
+                gif.source = shearePng.file;
+                gif.playing = true;
             }
         }
     }

@@ -12,7 +12,7 @@ ApplicationWindow {
         var brightness = (r * 299 + g * 587 + b * 114) / 1000;
         return brightness < 128;
     }
-    function createTodo(area, cheackBox,) {
+    function createTodo(area, cheackBox) {
         closeOnCompletion = cheackBox;
         let buffer = "";
         for (let i = 0; i < area.length; i++) {
@@ -28,15 +28,22 @@ ApplicationWindow {
         if (buffer !== "")
             todo.model.append({task: buffer});
     }
+    function editTodo(area, cheackBox){
+        for (let i = todo.count - 1; i >= 0; i--) {
+            //sticerWindow.height -= todo.model.get(0).check.height + 20;
+            todo.model.remove(i);
+        }
+        createTodo(area, cheackBox)
+    }
     function destroyEmpty(){
         if(titleSticer.text === "")
-        {
-            titleSticer.destroy()
-        }
-
+            titleSticer.visible = false;
+    }
+    function returnViseble(){
+        titleSticer.visible = true;
     }
     property bool closeOnCompletion: false
-
+    property string title: ""
     visible: true
     id: sticerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
@@ -55,12 +62,8 @@ ApplicationWindow {
                 menu.open()
         }
         onPressed: {
-            if (mouse.button === Qt.RightButton) {
-                contextMenu.visible = true
-            }else{
-                firstX = mouseX;
-                firstY = mouseY;
-            }
+            firstX = mouseX;
+            firstY = mouseY;
         }
         onPositionChanged: {
             if (mouse.buttons & Qt.LeftButton) {
@@ -78,6 +81,19 @@ ApplicationWindow {
             }
             MenuItem {
                 text: "Редактировать"
+                onTriggered: {
+                    titleArea.text = titleSticer.text
+                    let temp = "";
+                    for(let i = 0; i < todo.count; i++){
+                        temp += todo.model.get(i).task + '\n'
+                    }
+                    discriptionArea.text = temp
+                    pngOrCancel.text = "Отмена"
+                    createWindowButton.text = "Сохранить"
+                    tempId = customId
+                    editFlag = true;
+                    checkTodo.checked = true
+                }
             }
         }
     }
