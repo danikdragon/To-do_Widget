@@ -30,6 +30,7 @@ ApplicationWindow {
     }
     function editTodo(area, cheackBox){
         for (let i = todo.count - 1; i >= 0; i--) {
+            //завтра нужно это исправить
             //sticerWindow.height -= todo.model.get(0).check.height + 20;
             todo.model.remove(i);
         }
