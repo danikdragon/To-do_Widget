@@ -104,6 +104,13 @@ ApplicationWindow {
         anchors.margins: 10
         spacing: 10
         Text {
+            onVisibleChange:{
+                if(!visible)
+                stickerWindow.height -= titleSticker.height;
+                else
+                stickerWindow.height += titleSticker.height;
+
+            }
             id: titleSticer
             font.bold: true
             text: title
