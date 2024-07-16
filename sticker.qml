@@ -4,14 +4,6 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 ApplicationWindow {
-    function isColorDark(color) {
-        var colorComponents = Qt.rgba(color.r, color.g, color.b, color.a);
-        var r = colorComponents.r * 255;
-        var g = colorComponents.g * 255;
-        var b = colorComponents.b * 255;
-        var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        return brightness < 128;
-    }
     function destroyEmpty(){
         if(titleSticker.text === "")
         {
@@ -43,6 +35,7 @@ ApplicationWindow {
 
     Material.theme: Material.System
     Material.accent: "#9C27B0"
+
     ColumnLayout{
         anchors.fill: parent
         anchors.centerIn: parent
@@ -51,12 +44,12 @@ ApplicationWindow {
             id: titleSticker
             font.bold: true
             text: title
-            color: isColorDark(stickerWindow.color) ? "white" : "black"
+            color: isColorDark(stickerWindow.color)? "white" : "black"
         }
         Text {
             id: descriptionSticker
             text: description
-            color: isColorDark(stickerWindow.color) ? "white" : "black"
+            color: isColorDark(stickerWindow.color)? "white" : "black"
         }
     }
     MouseArea {
@@ -95,6 +88,10 @@ ApplicationWindow {
                     createWindowButton.text = "Сохранить"
                     tempId = customId
                 }
+            }
+            Button{
+                text: "lol its forked"
+                height: 10
             }
         }
     }

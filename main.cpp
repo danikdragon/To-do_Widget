@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QColor>
 
 int main(int argc, char *argv[])
 {

@@ -4,14 +4,6 @@ import QtQuick.Layouts
 import QtQuick.Controls.Material
 
 ApplicationWindow {
-    function isColorDark(color) {
-        var colorComponents = Qt.rgba(color.r, color.g, color.b, color.a);
-        var r = colorComponents.r * 255;
-        var g = colorComponents.g * 255;
-        var b = colorComponents.b * 255;
-        var brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        return brightness < 128;
-    }
     function createTodo(area, cheackBox) {
         closeOnCompletion = cheackBox;
         let buffer = "";
@@ -30,8 +22,7 @@ ApplicationWindow {
     }
     function editTodo(area, cheackBox){
         for (let i = todo.count - 1; i >= 0; i--) {
-            //завтра нужно это исправить
-            //sticerWindow.height -= todo.model.get(0).check.height + 20;
+            stickerWindow.height -= 68;
             todo.model.remove(i);
         }
         createTodo(area, cheackBox)
@@ -43,16 +34,18 @@ ApplicationWindow {
     function returnViseble(){
         titleSticer.visible = true;
     }
+
     property bool closeOnCompletion: false
     property string title: ""
     visible: true
-    id: sticerWindow
+    id: stickerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
     width: titleSticer.contentWidth + 20
     height: titleSticer.contentHeight
 
     Material.theme: Material.System
-    Material.accent: "#9C27B0"
+    Material.accent: Material.Purple
+
     MouseArea {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         anchors.fill: parent
@@ -68,8 +61,8 @@ ApplicationWindow {
         }
         onPositionChanged: {
             if (mouse.buttons & Qt.LeftButton) {
-                sticerWindow.x += mouseX - firstX;
-                sticerWindow.y += mouseY - firstY;
+                stickerWindow.x += mouseX - firstX;
+                stickerWindow.y += mouseY - firstY;
             }
         }
         Menu {
@@ -77,7 +70,7 @@ ApplicationWindow {
             MenuItem {
                 text: "Закрыть"
                 onTriggered: {
-                    sticerWindow.close()
+                    stickerWindow.close()
                 }
             }
             MenuItem {
@@ -104,17 +97,14 @@ ApplicationWindow {
         anchors.margins: 10
         spacing: 10
         Text {
-            onVisibleChange:{
-                if(!visible)
-                stickerWindow.height -= titleSticker.height;
-                else
-                stickerWindow.height += titleSticker.height;
-
-            }
             id: titleSticer
             font.bold: true
             text: title
-            color: isColorDark(sticerWindow.color) ? "white" : "black"
+            color: isColorDark(stickerWindow.color)? "white" : "black"
+            onVisibleChanged:{
+                //!visible ? stickerWindow.height -= titleSticer.contentHeight : stickerWindow.height += titleSticer.contentHeight
+                stickerWindow.height += !visible ? -titleSticer.contentHeight : titleSticer.contentHeight
+            }
         }
         Repeater{
             id: todo
@@ -134,18 +124,18 @@ ApplicationWindow {
                             for(let i = 0; i < todo.count; i++){
                                 todo.model.get(i).checkedModel === false && (completeTusk = false);
                             }
-                            completeTusk && sticerWindow.close();
+                            completeTusk && stickerWindow.close();
                         }
                     }
                 }
                 Text{
                     id: todoText
                     text: task
-                    color: isColorDark(sticerWindow.color) ? "white" : "black"
+                    color: isColorDark(stickerWindow.color)? "white" : "black"
                     Component.onCompleted:{
-                        sticerWindow.height += check.height + 20;
-                        if(todoText.contentWidth + check.width > sticerWindow.width){
-                            sticerWindow.width = todoText.contentWidth + check.width + 30
+                        stickerWindow.height += check.height + 20;
+                        if(todoText.contentWidth + check.width > stickerWindow.width){
+                            stickerWindow.width = todoText.contentWidth + check.width + 30
                         }
                     }
                 }

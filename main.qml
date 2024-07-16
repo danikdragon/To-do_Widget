@@ -44,6 +44,14 @@ ApplicationWindow {
         swapMode()
         clearArea()
     }
+    function isColorDark(color) {
+        var colorComponents = Qt.rgba(color.r, color.g, color.b, color.a);
+        var r = colorComponents.r * 255;
+        var g = colorComponents.g * 255;
+        var b = colorComponents.b * 255;
+        var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
     function clearArea(){
         titleArea.text = ""
         discriptionArea.text = ""
@@ -69,7 +77,7 @@ ApplicationWindow {
             }
             TextArea {
                 id: titleArea
-                placeholderText: "Название"
+                placeholderText: "Название или текст png"
                 color: "white"
                 anchors{
                     left: parent.left
@@ -111,11 +119,12 @@ ApplicationWindow {
                 id: pngOrCancel
                 text: "Создать png/gif"
                 FileDialog{
-                    nameFilters: ["*.png *.jpg *.gif *.jfif"]
+                    nameFilters: ["*.png *.jpg *.jpeg *.gif *.bmp *.ico *.svg *.jfif *.webp" ]
                     id: shearePng
                     onAccepted:{
                         let item = pngComponent.createObject()
                         item.href = shearePng.file
+                        item.title = titleArea.text;
                         pngStickers.push(item)
                         item.customId = pngStickers.length - 1;
                     }

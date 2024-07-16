@@ -7,20 +7,34 @@ import Qt.labs.platform
 ApplicationWindow {
     property string href: ""
     visible: true
-    id: sticerWindow
+    id: stickerWindow
     flags: Qt.FramelessWindowHint | Qt.WA_TranslucentBackground //| Qt.WindowStaysOnBottomHint
-    width: gif.width + 10
-    height: gif.height + 10
-    Material.theme: Material.System
+    width: column.width
+    height: column.height + titleText.contentHeight + 20
+    //Material.theme: Material.System
     Material.accent: "#9C27B0"
+    color: titleText.text ? "#1c1b1f" : "transparent"
 
     ColumnLayout{
-        anchors.fill: parent
-        anchors.margins: 10
+        id: column
+        width: gif.width
+        height: gif.height
         AnimatedImage{
-            anchors.centerIn: parent
+            anchors.top: parent.top
             id: gif
             source: href
+        }
+        Rectangle {
+            anchors.top: gif.bottom
+            Text{
+                id: titleText
+                width: gif.width
+                wrapMode: Text.Wrap
+                //anchors.fill: parent
+                padding: 10
+                color: isColorDark(stickerWindow.color)? "white" : "black"
+                text: title
+            }
         }
     }
     MouseArea {
@@ -38,8 +52,8 @@ ApplicationWindow {
         }
         onPositionChanged: {
             if (mouse.buttons & Qt.LeftButton) {
-                sticerWindow.x += mouseX - firstX;
-                sticerWindow.y += mouseY - firstY;
+                stickerWindow.x += mouseX - firstX;
+                stickerWindow.y += mouseY - firstY;
             }
         }
 
@@ -48,7 +62,7 @@ ApplicationWindow {
             MenuItem {
                 text: "Закрыть"
                 onTriggered: {
-                    sticerWindow.close()
+                    stickerWindow.close()
                 }
             }
             MenuItem {
@@ -60,10 +74,11 @@ ApplicationWindow {
         }
         FileDialog{
             id: shearePng
-            nameFilters: ["*.png *.jpg *.gif *.jfif"]
+            nameFilters: ["*.png *.jpg *.jpeg *.gif *.bmp *.ico *.svg *.jfif *.webp" ]
             onAccepted:{
                 gif.source = shearePng.file;
                 gif.playing = true;
+                titleText.text = titleArea.text
             }
         }
     }
